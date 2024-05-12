@@ -3,4 +3,11 @@ class QuizQuestion {
 
   final String text;
   final List<String> answers;
+
+  List<String> shuffleAnswers() {
+    final copyListAnswers = List.of(answers);
+    copyListAnswers.shuffle();
+
+    return copyListAnswers;
+  }
 }

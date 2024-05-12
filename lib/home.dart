@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
+import 'package:pop_dash_quiz/data/questions.dart';
 import 'package:pop_dash_quiz/questions_screen.dart';
+import 'package:pop_dash_quiz/results_screen.dart';
 import 'package:pop_dash_quiz/start_screen.dart';
 
 class Home extends StatefulWidget {
@@ -10,22 +13,37 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late Widget activeScreen;
-
-  @override
-  void initState() {
-    super.initState();
-    activeScreen = StartScreen(switchScreen);
-  }
+  final List<String> selectedAnswers = [];
+  var activeScreen = 'start-screen';
 
   void switchScreen() {
     setState(() {
-      activeScreen = const QuestionScreens();
+      activeScreen = 'questions-screen';
     });
+  }
+
+  void choseAnswer(String answer) {
+    selectedAnswers.add(answer);
+
+    if (selectedAnswers.length == questions.length) {
+      setState(() {
+        activeScreen = 'results-screen';
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget screenWidget = StartScreen(switchScreen);
+
+    if (activeScreen == 'questions-screen') {
+      screenWidget = QuestionScreens(onSelectAnswer: choseAnswer);
+    }
+
+    if (activeScreen == 'results-screen') {
+      screenWidget = const ResultsScreen();
+    }
+
     return MaterialApp(
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -34,7 +52,7 @@ class _HomeState extends State<Home> {
       home: Scaffold(
         backgroundColor: Colors.deepPurple,
         body: Container(
-          child: activeScreen,
+          child: screenWidget,
         ),
       ),
     );
